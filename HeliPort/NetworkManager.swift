@@ -28,12 +28,23 @@ final class NetworkManager {
         ITL80211_SECURITY_WPA3_TRANSITION
     ]
 
+    // Raw RSN parameters of networks reported as unknown security, keyed by SSID
+    private static var unknownSecurityDetails = [String: String]()
+    private static let unknownSecurityLock = NSLock()
+
     static func connect(networkInfo: NetworkInfo, saveNetwork: Bool = false,
                         _ callback: ((_ result: Bool) -> Void)? = nil) {
 
         guard supportedSecurityMode.contains(networkInfo.auth.security) else {
-            let alert = Alert(text: NSLocalizedString("Network security not supported: ")
-                              + networkInfo.auth.security.description)
+            var text = NSLocalizedString("Network security not supported: ")
+                + networkInfo.auth.security.description
+            unknownSecurityLock.lock()
+            if networkInfo.auth.security == ITL80211_SECURITY_UNKNOWN,
+               let details = unknownSecurityDetails[networkInfo.ssid] {
+                text += " (\(details))"
+            }
+            unknownSecurityLock.unlock()
+            let alert = Alert(text: text)
             alert.show()
             return
         }
@@ -127,6 +138,15 @@ final class NetworkManager {
                     rssi: Int(network.rssi)
                 )
                 networkInfo.auth.security = getSecurityType(network)
+                if networkInfo.auth.security == ITL80211_SECURITY_UNKNOWN {
+                    let details = String(format: "protos 0x%x, AKMs 0x%x, supported AKMs 0x%x",
+                                         network.supported_rsnprotos, network.rsn_akms,
+                                         network.supported_rsnakms)
+                    Log.error("Unknown security for \(ssid): \(details)")
+                    unknownSecurityLock.lock()
+                    unknownSecurityDetails[ssid] = details
+                    unknownSecurityLock.unlock()
+                }
                 result.insert(networkInfo)
             }
 
@@ -299,9 +319,10 @@ final class NetworkManager {
                     return ITL80211_SECURITY_WPA_ENTERPRISE_MIXED
                 }
                 return ITL80211_SECURITY_WPA2_ENTERPRISE
-            } else if info.rsn_akms & ITL80211_AKM_SAE.rawValue != 0 {
-                // WPA3
-                if info.rsn_akms & (ITL80211_AKM_PSK.rawValue | ITL80211_AKM_SHA256_PSK.rawValue) != 0 {
+            } else if (info.rsn_akms | info.supported_rsnakms) & ITL80211_AKM_SAE.rawValue != 0 {
+                // WPA3; rsn_akms only holds the AKMs itlwm is currently configured for
+                let psk = ITL80211_AKM_PSK.rawValue | ITL80211_AKM_SHA256_PSK.rawValue
+                if (info.rsn_akms | info.supported_rsnakms) & psk != 0 {
                     return ITL80211_SECURITY_WPA3_TRANSITION
                 }
                 return ITL80211_SECURITY_WPA3_PERSONAL
