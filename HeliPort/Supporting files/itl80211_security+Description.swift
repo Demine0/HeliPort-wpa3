@@ -45,7 +45,7 @@ extension itl80211_security: CustomStringConvertible {
         case ITL80211_SECURITY_WPA3_ENTERPRISE:
             return "WPA3 Enterprise"
         case ITL80211_SECURITY_WPA3_TRANSITION:
-            return "WPA3 Transition"
+            return "WPA2/WPA3 Personal"
         default:
             return "Unknown"
         }

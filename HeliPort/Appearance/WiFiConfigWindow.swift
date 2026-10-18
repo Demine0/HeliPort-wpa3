@@ -82,10 +82,10 @@ class WiFiConfigWindow: NSWindow {
 
             //.wep,
             .wpa_1_2_Personal,
-            //.wpa_2_3_Personal,
+            .wpa_2_3_Personal,
             .wpaPersonal,
-            .wpa2Personal
-            //,.wpa3Personal
+            .wpa2Personal,
+            .wpa3Personal
         ])
         /*
         pop.menu?.addItem(.separator())
@@ -553,6 +553,10 @@ extension WiFiConfigWindow {
             network.auth.security = ITL80211_SECURITY_WPA_PERSONAL
         case .wpa2Personal:
             network.auth.security = ITL80211_SECURITY_WPA2_PERSONAL
+        case .wpa_2_3_Personal:
+            network.auth.security = ITL80211_SECURITY_WPA3_TRANSITION
+        case .wpa3Personal:
+            network.auth.security = ITL80211_SECURITY_WPA3_PERSONAL
         case .wpa_1_2_Enterprise:
             network.auth.security = ITL80211_SECURITY_WPA_ENTERPRISE_MIXED
         case .wpa2Enterprise:
@@ -630,7 +634,7 @@ private extension String {
     static let none = NSLocalizedString(ITL80211_SECURITY_NONE.description)
     static let wep = NSLocalizedString(ITL80211_SECURITY_WEP.description)
     static let wpa_1_2_Personal = NSLocalizedString(ITL80211_SECURITY_WPA_PERSONAL_MIXED.description)
-    static let wpa_2_3_Personal = NSLocalizedString("WPA2/WPA3 Personal")
+    static let wpa_2_3_Personal = NSLocalizedString(ITL80211_SECURITY_WPA3_TRANSITION.description)
     static let wpaPersonal = NSLocalizedString(ITL80211_SECURITY_WPA_PERSONAL.description)
     static let wpa2Personal = NSLocalizedString(ITL80211_SECURITY_WPA2_PERSONAL.description)
     static let wpa3Personal = NSLocalizedString(ITL80211_SECURITY_WPA3_PERSONAL.description)

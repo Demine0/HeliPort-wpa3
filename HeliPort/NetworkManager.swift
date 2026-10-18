@@ -23,7 +23,9 @@ final class NetworkManager {
         ITL80211_SECURITY_WPA_PERSONAL,
         ITL80211_SECURITY_WPA_PERSONAL_MIXED,
         ITL80211_SECURITY_WPA2_PERSONAL,
-        ITL80211_SECURITY_PERSONAL
+        ITL80211_SECURITY_PERSONAL,
+        ITL80211_SECURITY_WPA3_PERSONAL,
+        ITL80211_SECURITY_WPA3_TRANSITION
     ]
 
     static func connect(networkInfo: NetworkInfo, saveNetwork: Bool = false,
@@ -297,6 +299,12 @@ final class NetworkManager {
                     return ITL80211_SECURITY_WPA_ENTERPRISE_MIXED
                 }
                 return ITL80211_SECURITY_WPA2_ENTERPRISE
+            } else if info.rsn_akms & ITL80211_AKM_SAE.rawValue != 0 {
+                // WPA3
+                if info.rsn_akms & (ITL80211_AKM_PSK.rawValue | ITL80211_AKM_SHA256_PSK.rawValue) != 0 {
+                    return ITL80211_SECURITY_WPA3_TRANSITION
+                }
+                return ITL80211_SECURITY_WPA3_PERSONAL
             } else if info.rsn_akms & ITL80211_AKM_PSK.rawValue != 0 {
                 if info.supported_rsnprotos & ITL80211_PROTO_WPA.rawValue != 0 {
                     return ITL80211_SECURITY_WPA_PERSONAL_MIXED

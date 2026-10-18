@@ -61,9 +61,9 @@ class PrefsViewWiFiInfoModal: NSWindow {
 
         //pop?.addItem(withTitle: NSLocalizedString("WEP", comment: ""))
         pop.addItem(withTitle: .wpa1_2_Personal)
-        //pop?.addItem(withTitle: NSLocalizedString("WPA2/WPA3 Personal", comment: ""))
+        pop.addItem(withTitle: .wpa2_3_Personal)
         pop.addItem(withTitle: .wpa2Personal)
-        //pop?.addItem(withTitle: NSLocalizedString("WPA3 Personal", comment: ""))
+        pop.addItem(withTitle: .wpa3Personal)
         pop.menu?.addItem(.separator())
         //pop?.addItem(withTitle: NSLocalizedString("Dynamic WEP", comment: ""))
         pop.addItem(withTitle: .wpa1_2_Enterprise)
@@ -334,9 +334,9 @@ class PrefsViewWiFiInfoModal: NSWindow {
             }, completionHandler: nil)
 
         case .wpa1_2_Personal,
-             NSLocalizedString("WPA2/WPA3 Personal", comment: ""),
+             .wpa2_3_Personal,
              .wpa2Personal,
-             NSLocalizedString("WPA3 Personal", comment: ""):
+             .wpa3Personal:
 
             self.usernameLabel.isHidden = true
             self.usernameBox.isHidden = true
@@ -437,7 +437,9 @@ private extension String {
     static let security = NSLocalizedString("Security:")
     static let none = NSLocalizedString(ITL80211_SECURITY_NONE.description)
     static let wpa1_2_Personal = NSLocalizedString(ITL80211_SECURITY_WPA_PERSONAL_MIXED.description)
+    static let wpa2_3_Personal = NSLocalizedString(ITL80211_SECURITY_WPA3_TRANSITION.description)
     static let wpa2Personal = NSLocalizedString(ITL80211_SECURITY_WPA2_PERSONAL.description)
+    static let wpa3Personal = NSLocalizedString(ITL80211_SECURITY_WPA3_PERSONAL.description)
     static let wpa1_2_Enterprise = NSLocalizedString(ITL80211_SECURITY_WPA_ENTERPRISE_MIXED.description)
     static let wpa2Enterprise = NSLocalizedString(ITL80211_SECURITY_WPA2_ENTERPRISE.description)
     static let username = NSLocalizedString("Username:")

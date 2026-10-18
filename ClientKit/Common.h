@@ -174,7 +174,8 @@ enum itl80211_akm {
     ITL80211_AKM_8021X          = 0x00000001,
     ITL80211_AKM_PSK            = 0x00000002,
     ITL80211_AKM_SHA256_8021X   = 0x00000004,   /* 11w */
-    ITL80211_AKM_SHA256_PSK     = 0x00000008    /* 11w */
+    ITL80211_AKM_SHA256_PSK     = 0x00000008,   /* 11w */
+    ITL80211_AKM_SAE            = 0x00000010    /* WPA3-Personal */
 };
 
 struct ioctl_network_info {
